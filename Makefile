@@ -1,6 +1,17 @@
 PYTHON ?= python3
 
-CONTAINER_ENGINE ?= docker
+ifndef CONTAINER_ENGINE
+# Tool to use for building the images, either docker or buildah
+ifneq (, $(shell which buildah))
+CONTAINER_ENGINE := buildah
+else
+ifneq (, $(shell which docker))
+CONTAINER_ENGINE := docker
+else
+$(error "Neither docker nor buildah are available in PATH")
+endif
+endif
+endif
 
 NAME = ansible-runner
 IMAGE_NAME ?= quay.io/ansible/ansible-runner
